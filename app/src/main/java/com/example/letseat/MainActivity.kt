@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
         emailView = findViewById(R.id.EmailEditText)
         passwordView = findViewById(R.id.PasswordEditText)
 
+        val extraButton = findViewById<Button>(R.id.extraButton)
+        extraButton.setOnClickListener {
+            val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
+            startActivity(intent)
+        }
+
         val signUpButton = findViewById<Button>(R.id.createuserbutton)
         signUpButton.setOnClickListener {
             signUp()
