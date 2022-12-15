@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
             signIn()
         }
 
+        if (auth.currentUser != null){
+            goToAddActivity()
+        }
     }
 
     fun goToAddActivity(){

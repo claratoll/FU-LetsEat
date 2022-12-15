@@ -55,19 +55,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun createPlaces(){
 
-        val p1 = Restaurant("Hemma", true, 7, LatLng(59.1, 18.0))
-        val p2 = Restaurant("Jobb", false,9, LatLng(58.1, 17.0),)
+       // val p1 = Restaurant("Hemma","Hörngatan 5", true, 7, LatLng(59.1, 18.0))
+        //val p2 = Restaurant("Jobb","Hörngatan 7", false,9, LatLng(58.1, 17.0),)
 
 
-        val placeList = listOf<Restaurant>(p1,p2)
+    //    val placeList = listOf<Restaurant>(p1,p2)
 
-        for (place in placeList) {
+        /*for (place in placeList) {
             val marker = place.position?.let { MarkerOptions().position(it) }
                 ?.let { mMap.addMarker(it) }
             marker?.tag = place
             mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(59.1, 18.0)))
             Log.v("!!!", "new place")
-        }
+        }*/
 
     }
 }
