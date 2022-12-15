@@ -26,7 +26,9 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
 
         val restaurant = restaurants[position]
         holder.restaurantNameView.text = restaurant.restaurantName
-        holder.infoTextView.text = restaurant.points.toString()
+        holder.infoTextView.text = restaurant.address.toString()
+
+        holder.restaurantPosition = position
 
         /*val student = students[position]
 
@@ -41,7 +43,6 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
 
 
 
-
    /* fun removeStudent(position: Int){
         DataManager.students.removeAt(position)
         notifyDataSetChanged()
@@ -52,6 +53,7 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         val infoTextView = itemView.findViewById<TextView>(R.id.infoTextView)
         var restaurantPosition = 0
 
+        //itemview set on click
 
       /*  init {
             itemView.setOnClickListener{

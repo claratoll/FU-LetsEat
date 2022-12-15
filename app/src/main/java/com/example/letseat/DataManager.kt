@@ -11,7 +11,7 @@ object DataManager {
     }
 
     fun createRestaurants(){
-        restaurants.add(Restaurant("Pizzeria Elvan", false, 6, LatLng(59.1, 18.0)))
-        restaurants.add(Restaurant("Slottsrestaurangen", true, 4,  LatLng( 59.1, 18.0)))
+     //   restaurants.add(Restaurant("Pizzeria Elvan", false, 6, LatLng(59.1, 18.0)))
+       // restaurants.add(Restaurant("Slottsrestaurangen", true, 4,  LatLng( 59.1, 18.0)))
     }
 }

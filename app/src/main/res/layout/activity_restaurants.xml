@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".RestaurantsActivity">
+    tools:context=".ShowAllRestaurantsActivity">
 
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/letseatLogoImage"
         android:layout_width="412dp"
         android:layout_height="246dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,7 +18,7 @@
         app:srcCompat="@drawable/textletseat" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/LEHatLogoImage"
         android:layout_width="143dp"
         android:layout_height="145dp"
         app:layout_constraintStart_toStartOf="parent"
