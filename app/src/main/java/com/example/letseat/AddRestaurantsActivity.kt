@@ -71,14 +71,14 @@ class AddRestaurantsActivity : AppCompatActivity() {
             return
         }
 
-        //send address to function to get the adress
-        val latLng = getLocationFromAddress(itemAddress)
+        //send address to function to get the GeoPoints
+        val geoPointAddress = getLocationFromAddress(itemAddress)
 
-        Log.v("!!!", "$latLng")
+        Log.v("!!!", "$geoPointAddress")
 
-      //  val item = Restaurant(itemName, itemAddress)
-        val item = Restaurant(restaurantName = itemName, address = itemAddress, position = latLng)
+        val item = Restaurant(restaurantName = itemName, address = itemAddress, position = geoPointAddress)
 
+        //adds location to database
         db.collection("users").document(user.uid)
             .collection("restaurants").add(item)
 
@@ -97,11 +97,8 @@ class AddRestaurantsActivity : AppCompatActivity() {
 
 
 
-
-
-    fun getLocationFromAddress(strAddress: String?): LatLng? {
-
-        //i don't really know how to get this to work but :) hey
+    fun getLocationFromAddress(strAddress: String?): GeoPoint? {
+        //gets GeoPoint Location from Address
 
         Log.v("!!!", "$strAddress")
         var lat = 0.0
@@ -118,13 +115,10 @@ class AddRestaurantsActivity : AppCompatActivity() {
             val location: Address = address[0]
             lat = location.getLatitude()
             long = location.getLongitude()
-            Log.v("!!!", "$lat")
-            Log.v("!!!", "$long")
-            p1 = GeoPoint(
-                (location.getLatitude() * 1E6) as Double,
-                (location.getLongitude() * 1E6) as Double
-            )
-           // return p1????
+            Log.v("!!!", "latitude $lat")
+            Log.v("!!!", "longitude $long")
+            p1 = GeoPoint(lat, long)
+            return p1
         } catch (e: IOException) {
             e.printStackTrace()
         }

@@ -25,8 +25,9 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val restaurant = restaurants[position]
-        holder.restaurantNameView.text = restaurant.restaurantName
+        holder.restaurantNameView.text = restaurant.restaurantName.toString()
         holder.infoTextView.text = restaurant.address.toString()
+        holder.resPoints.text = "The restaurant has ${restaurant?.points.toString()} points"
 
         holder.restaurantPosition = position
 
@@ -51,24 +52,25 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView){
         val restaurantNameView = itemView.findViewById<TextView>(R.id.RestaurantNameView)
         val infoTextView = itemView.findViewById<TextView>(R.id.infoTextView)
+        val resPoints = itemView.findViewById<TextView>(R.id.pointsDisplayTextView)
         var restaurantPosition = 0
 
         //itemview set on click
 
-      /*  init {
-            itemView.setOnClickListener{
-                val intent = Intent(context, CreateAndEditStudentActivity::class.java)
-                intent.putExtra(STUDENT_POSITION_KEY, studentPosition)
+        init {
+            restaurantNameView.setOnClickListener{
+                val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
+                intent.putExtra("documentID", restaurantPosition)
                 context.startActivity(intent)
             }
 
-            presentButton.setOnClickListener {
-                DataManager.students[studentPosition].present = presentButton.isChecked
+            infoTextView.setOnClickListener{
+                val intent = Intent(context, MapsActivity::class.java)
+                intent.putExtra("documentID", restaurantPosition)
+                context.startActivity(intent)
             }
 
-            deleteButton.setOnClickListener{
-                removeStudent(studentPosition)
-            }*/
+            }
 
 
     }
