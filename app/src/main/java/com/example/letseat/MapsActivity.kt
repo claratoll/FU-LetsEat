@@ -11,14 +11,29 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.letseat.databinding.ActivityMapsBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    lateinit var auth : FirebaseAuth
+    lateinit var db : FirebaseFirestore
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
+    private var listOfRestaurants = mutableListOf<Restaurant>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
+        db = Firebase.firestore
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -42,7 +57,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
 
-
+        getUserData()
         createPlaces()
         // Add a marker in Sydney and move the camera
        // val sydney = LatLng(-34.0, 151.0)
@@ -59,15 +74,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //val p2 = Restaurant("Jobb","Hörngatan 7", false,9, LatLng(58.1, 17.0),)
 
 
-    //    val placeList = listOf<Restaurant>(p1,p2)
 
-        /*for (place in placeList) {
-            val marker = place.position?.let { MarkerOptions().position(it) }
-                ?.let { mMap.addMarker(it) }
-            marker?.tag = place
+        for (restaurant in listOfRestaurants) {
+
+
+
+
+
+            val marker = mMap.addMarker(MarkerOptions().position(restaurant.position))
+            /*val marker = place.position?.let { MarkerOptions().position(place.position) }
+                ?.let { mMap.addMarker(it) }*/
+            marker?.tag = restaurant
             mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(59.1, 18.0)))
             Log.v("!!!", "new place")
-        }*/
+        }
 
     }
+
+    fun getUserData(){
+        val docRef = auth.currentUser?.let {
+            db.collection("users")
+                .document(it.uid)
+                .collection("restaurants")
+                .get()
+                .addOnSuccessListener { documents ->
+                    val restArray = mutableListOf<Restaurant>()
+                    for (document in documents){
+                        val restaurantDoc = document.toObject(Restaurant::class.java)
+                        Log.d("!!!", restaurantDoc.toString())
+                        restArray.add(restaurantDoc)
+                    }
+                    listOfRestaurants.addAll(restArray)
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("!!!", "get failed with ", exception)
+                }
+        }
+    }
+
+
 }

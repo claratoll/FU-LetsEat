@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //login page
+        //login to app
         auth = Firebase.auth
 
         emailView = findViewById(R.id.EmailEditText)
