@@ -34,7 +34,7 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
         pointsView.text = "The restaurant has ${restaurant?.points.toString()} points"
 
         /*if(restaurant != null){
-            imageView.setImageResource(restaurant.image)
+            imageView.setImageResource(restaurant?.image)
         }*/
 
         return infoWindow

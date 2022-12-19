@@ -2,6 +2,7 @@ package com.example.letseat
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,24 +31,11 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         holder.resPoints.text = "The restaurant has ${restaurant?.points.toString()} points"
 
         holder.restaurantPosition = position
-
-        /*val student = students[position]
-
-        holder.nameTextView.text = student.name
-        holder.classTextView.text = student.className
-        holder.presentButton.isChecked = student.present
-        holder.studentPosition = position*/
-
     }
 
     override fun getItemCount() = restaurants.size
 
 
-
-   /* fun removeStudent(position: Int){
-        DataManager.students.removeAt(position)
-        notifyDataSetChanged()
-    }*/
 
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView){
         val restaurantNameView = itemView.findViewById<TextView>(R.id.RestaurantNameView)
@@ -55,7 +43,8 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         val resPoints = itemView.findViewById<TextView>(R.id.pointsDisplayTextView)
         var restaurantPosition = 0
 
-        //itemview set on click
+        //If user presses the restaurant name it will go to detailed information about the restaurant
+        //If user presses the address it will go to the map
 
         init {
             restaurantNameView.setOnClickListener{
@@ -66,16 +55,13 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
 
             infoTextView.setOnClickListener{
                 val intent = Intent(context, MapsActivity::class.java)
+                Log.v("!!!" , "restaurantPosition $restaurantPosition")
                 intent.putExtra("documentID", restaurantPosition)
                 context.startActivity(intent)
             }
 
             }
 
-
     }
-
-
-
 
 }

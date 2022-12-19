@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("!!!", "user not created ${task.exception}")
             }
-
         }
     }
 
@@ -93,5 +92,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 }
