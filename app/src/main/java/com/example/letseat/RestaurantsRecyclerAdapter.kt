@@ -25,8 +25,9 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val restaurant = restaurants[position]
-        holder.restaurantNameView.text = restaurant.restaurantName
+        holder.restaurantNameView.text = restaurant.restaurantName.toString()
         holder.infoTextView.text = restaurant.address.toString()
+        holder.resPoints.text = restaurant.points.toString()
 
         holder.restaurantPosition = position
 
@@ -51,6 +52,7 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView){
         val restaurantNameView = itemView.findViewById<TextView>(R.id.RestaurantNameView)
         val infoTextView = itemView.findViewById<TextView>(R.id.infoTextView)
+        val resPoints = itemView.findViewById<TextView>(R.id.pointsDisplayTextView)
         var restaurantPosition = 0
 
         //itemview set on click
