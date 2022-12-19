@@ -42,6 +42,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
     }
 
     /**
@@ -56,13 +58,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        val adapter = RestaurantInfoAdapter(this)
+        mMap.setInfoWindowAdapter(adapter)
 
         getUserData()
         createPlaces()
-        // Add a marker in Sydney and move the camera
-       // val sydney = LatLng(-34.0, 151.0)
-        //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        //  Add a marker in Sydney and move the camera
+        val sydney = LatLng(-34.0, 151.0)
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
     //add a place from adress:
@@ -70,22 +74,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun createPlaces(){
 
-       // val p1 = Restaurant("Hemma","Hörngatan 5", true, 7, LatLng(59.1, 18.0))
-        //val p2 = Restaurant("Jobb","Hörngatan 7", false,9, LatLng(58.1, 17.0),)
-
-
+        Log.v("!!!", "new place")
 
         for (restaurant in listOfRestaurants) {
 
-
-
-
-
-            val marker = mMap.addMarker(MarkerOptions().position(restaurant.position))
-            /*val marker = place.position?.let { MarkerOptions().position(place.position) }
-                ?.let { mMap.addMarker(it) }*/
+            //val marker = mMap.addMarker(MarkerOptions().position(restaurant.position.latitude, restaurant.position.longitude))
+          /*  val marker = restaurant.position?.let { MarkerOptions().position(restaurant.position) }
+                ?.let { mMap.addMarker(it) }
             marker?.tag = restaurant
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(59.1, 18.0)))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(59.1, 18.0)))*/
             Log.v("!!!", "new place")
         }
 
@@ -101,7 +98,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val restArray = mutableListOf<Restaurant>()
                     for (document in documents){
                         val restaurantDoc = document.toObject(Restaurant::class.java)
-                        Log.d("!!!", restaurantDoc.toString())
                         restArray.add(restaurantDoc)
                     }
                     listOfRestaurants.addAll(restArray)

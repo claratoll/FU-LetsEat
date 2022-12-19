@@ -27,7 +27,7 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         val restaurant = restaurants[position]
         holder.restaurantNameView.text = restaurant.restaurantName.toString()
         holder.infoTextView.text = restaurant.address.toString()
-        holder.resPoints.text = restaurant.points.toString()
+        holder.resPoints.text = "The restaurant has ${restaurant?.points.toString()} points"
 
         holder.restaurantPosition = position
 
@@ -57,20 +57,20 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
 
         //itemview set on click
 
-      /*  init {
-            itemView.setOnClickListener{
-                val intent = Intent(context, CreateAndEditStudentActivity::class.java)
-                intent.putExtra(STUDENT_POSITION_KEY, studentPosition)
+        init {
+            restaurantNameView.setOnClickListener{
+                val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
+                intent.putExtra("documentID", restaurantPosition)
                 context.startActivity(intent)
             }
 
-            presentButton.setOnClickListener {
-                DataManager.students[studentPosition].present = presentButton.isChecked
+            infoTextView.setOnClickListener{
+                val intent = Intent(context, MapsActivity::class.java)
+                intent.putExtra("documentID", restaurantPosition)
+                context.startActivity(intent)
             }
 
-            deleteButton.setOnClickListener{
-                removeStudent(studentPosition)
-            }*/
+            }
 
 
     }
