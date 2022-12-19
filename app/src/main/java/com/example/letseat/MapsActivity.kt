@@ -1,5 +1,6 @@
 package com.example.letseat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.letseat.databinding.ActivityMapsBinding
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,18 +46,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        val restaurantNumber = intent.getIntExtra("documentID", 0)
+
+
+        Log.v("!!!", restaurantNumber.toString())
+
 
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -62,30 +61,47 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.setInfoWindowAdapter(adapter)
 
         getUserData()
-        createPlaces()
-        //  Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
     }
 
-    //add a place from adress:
-    //https://stackoverflow.com/questions/24352192/android-google-maps-add-marker-by-address
+    fun startPlaceFromIntent(){
+
+        val intentPlace = LatLng(-34.0, 151.0)
+        mMap.addMarker(MarkerOptions().position(intentPlace).title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(intentPlace))
+
+    }
+
+
 
     fun createPlaces(){
 
         Log.v("!!!", "new place")
 
+        Log.v("!!!", "${listOfRestaurants.size}")
+
+        val boundsBuilder = LatLngBounds.builder()
+
         for (restaurant in listOfRestaurants) {
 
+
+            val latitude = restaurant.position?.latitude?.toDouble()
+            val longitude = restaurant.position?.longitude?.toDouble()
+
             //val marker = mMap.addMarker(MarkerOptions().position(restaurant.position.latitude, restaurant.position.longitude))
-          /*  val marker = restaurant.position?.let { MarkerOptions().position(restaurant.position) }
-                ?.let { mMap.addMarker(it) }
+
+            val location = latitude?.let { longitude?.let { it1 -> LatLng(it,it1) } }
+            if (location!= null){
+                boundsBuilder.include(location)
+            }
+            val marker = location?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
             marker?.tag = restaurant
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(59.1, 18.0)))*/
-            Log.v("!!!", "new place")
+
+
+            Log.v("!!!", "restaurant")
         }
 
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 1000, 1000, 0))
     }
 
     fun getUserData(){
@@ -101,6 +117,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         restArray.add(restaurantDoc)
                     }
                     listOfRestaurants.addAll(restArray)
+                    Log.v("!!!", "${listOfRestaurants.size}")
+                    createPlaces()
                 }
                 .addOnFailureListener { exception ->
                     Log.d("!!!", "get failed with ", exception)
