@@ -31,7 +31,6 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         holder.resPoints.text = "The restaurant has ${restaurant?.points.toString()} points"
 
         holder.restaurantPosition = position
-
     }
 
     override fun getItemCount() = restaurants.size
@@ -44,7 +43,8 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         val resPoints = itemView.findViewById<TextView>(R.id.pointsDisplayTextView)
         var restaurantPosition = 0
 
-        //itemview set on click
+        //If user presses the restaurant name it will go to detailed information about the restaurant
+        //If user presses the address it will go to the map
 
         init {
             restaurantNameView.setOnClickListener{
