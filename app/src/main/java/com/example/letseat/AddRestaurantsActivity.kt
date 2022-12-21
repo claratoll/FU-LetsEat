@@ -79,8 +79,7 @@ class AddRestaurantsActivity : AppCompatActivity() {
         val item = Restaurant(restaurantName = itemName, address = itemAddress, position = geoPointAddress)
 
         //adds location to database
-        db.collection("users").document(user.uid)
-            .collection("restaurants").add(item)
+        db.collection("restaurants").add(item)
 
     }
 

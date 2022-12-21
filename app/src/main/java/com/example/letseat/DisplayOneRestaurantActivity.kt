@@ -1,6 +1,6 @@
 package com.example.letseat
 
-import android.content.ClipData
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,22 +8,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import java.util.jar.Attributes
-import kotlin.math.log
 
 class DisplayOneRestaurantActivity : AppCompatActivity() {
 
-    lateinit var nameView : TextView
-    lateinit var addressView: TextView
-    lateinit var pointsView: TextView
+    private lateinit var nameView: TextView
+    private lateinit var addressView: TextView
+    private lateinit var pointsView: TextView
 
-    lateinit var auth : FirebaseAuth
-    lateinit var db : FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
+    private val restaurantList = mutableListOf<Restaurant>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,56 +37,52 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         pointsView = findViewById(R.id.ResPointsTextView)
         var dishImage = findViewById<ImageView>(R.id.DishDisplayImageView)
 
-        Log.v("!!!", "hejhej")
+        val restaurantId = intent.getIntExtra("documentID", 999)
 
-        val user = auth.currentUser
-
-        val restaurantList = mutableListOf<Restaurant>()
+        getUserData(restaurantId)
 
 
-        if (user != null) {
-            db.collection("users").document(user.uid).collection("restaurants")
-                .addSnapshotListener { snapshot, e ->
-                    restaurantList.clear()
-                    if (snapshot != null) {
-                        for (document in snapshot.documents) {
-                            val item = document.toObject<Restaurant>()
-                            if (item != null) {
-                                restaurantList.add(item)
-                            }
-                        }
-                    }
-                    for (item in restaurantList) {
-                        Log.d("!!!", "$item")
-                    }
-                }
+        addressView.setOnClickListener{
+            val intent = Intent(this, MapsActivity::class.java)
+            Log.v("!!!" , "restaurantPosition $restaurantId")
+            intent.putExtra("documentID", restaurantId)
+            this.startActivity(intent)
         }
 
 
-        //if (user != null) {
-            /*      db.collection("users").document(user.uid)
-                .collection("restaurants").get().addOnCompleteListener(){
-                    Log.v("!!!", "get restaurant")
-                    nameView = colle
-            }
-        */
+    }
 
-      /*  val docRef = db.collection("users").document("restaurants")
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d("!!!", "DocumentSnapshot data: ${document.data}")
-                } else {
-                    Log.d("!!!", "No such document")
+
+    private fun getUserData(restaurantId: Int) {
+
+
+        val docRef = auth.currentUser?.let {
+            db.collection("restaurants")
+                .addSnapshotListener { snapshot, e ->
+                    restaurantList.clear()
+                    if (snapshot != null) {
+                        val restArray = mutableListOf<Restaurant>()
+                        for (document in snapshot.documents) {
+                            val restaurantDoc = document.toObject<Restaurant>()
+                            if (restaurantDoc != null) {
+                                restArray.add(restaurantDoc)
+                            }
+                        }
+                        restaurantList.addAll(restArray)
+                        placeName(restaurantId)
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("!!!", "get failed with ", exception)
-            }
 
-*/
+        }
+    }
 
+    fun placeName(restaurantId: Int) {
 
+        val restaurant = restaurantList[restaurantId]
+
+        nameView.text = restaurant.restaurantName.toString()
+        addressView.text = restaurant.address.toString()
+        pointsView.text = "The restaurant has ${restaurant.points}"
 
     }
 }
