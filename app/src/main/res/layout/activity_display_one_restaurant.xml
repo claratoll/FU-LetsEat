@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="@drawable/background"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".DisplayOneRestaurantActivity">
 
     <ImageView
@@ -93,5 +93,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_baseline_food_bank_24" />
+
+    <EditText
+        android:id="@+id/editPointsView"
+        android:layout_width="103dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="1-10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ResPointsTextView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Your points: "
+        app:layout_constraintEnd_toStartOf="@+id/editPointsView"
+        app:layout_constraintTop_toBottomOf="@+id/ResPointsTextView" />
+
+    <Button
+        android:id="@+id/savePointsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="save"
+        app:layout_constraintStart_toEndOf="@+id/editPointsView"
+        app:layout_constraintTop_toBottomOf="@+id/ResPointsTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

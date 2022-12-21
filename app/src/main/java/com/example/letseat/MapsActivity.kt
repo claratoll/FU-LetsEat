@@ -61,9 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun fetchDataFromServer() {
         val docRef = auth.currentUser?.let {
-            db.collection("users")
-                .document(it.uid)
-                .collection("restaurants")
+            db.collection("restaurants")
                 .get()
                 .addOnSuccessListener { documents ->
                     val restArray = mutableListOf<Restaurant>()

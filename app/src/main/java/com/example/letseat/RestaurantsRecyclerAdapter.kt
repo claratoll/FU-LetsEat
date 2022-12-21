@@ -15,13 +15,11 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
 
     val layoutInflater = LayoutInflater.from(context)
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = layoutInflater.inflate(R.layout.restaurant_item, parent, false)
 
         return ViewHolder(itemView)
     }
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
@@ -34,8 +32,6 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
     }
 
     override fun getItemCount() = restaurants.size
-
-
 
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView){
         val restaurantNameView = itemView.findViewById<TextView>(R.id.RestaurantNameView)
