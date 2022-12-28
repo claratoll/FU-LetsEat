@@ -1,10 +1,13 @@
 package com.example.letseat
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 
@@ -16,6 +19,7 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
     override fun getInfoContents(p0: Marker): View? {
         return null
     }
+
 
 
     override fun getInfoWindow(marker: Marker): View? {
@@ -37,8 +41,22 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
             imageView.setImageResource(restaurant?.image)
         }*/
 
+
+
+
+        infoWindow.setOnClickListener{
+            Log.v("!!!", "helo")
+            val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
+            intent.putExtra("documentID", restaurant?.restaurantName)
+            context.startActivity(intent)
+        }
+
+
+
         return infoWindow
     }
+
+
 
 
 }

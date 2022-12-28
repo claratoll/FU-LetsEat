@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToAddActivity(){
-        val intent = Intent(this, AddRestaurantsActivity::class.java)
+        val intent = Intent(this, ShowAllRestaurantsActivity::class.java)
         startActivity(intent)
     }
 
