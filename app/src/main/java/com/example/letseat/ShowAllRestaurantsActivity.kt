@@ -1,10 +1,13 @@
 package com.example.letseat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -19,6 +22,7 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
     //activity to display all restaurants and also
     // make the restaurants clickable to "single view restaurants"
     // where they can go to the maps-activity if they want
+    private lateinit var mAddFab: FloatingActionButton
 
     private lateinit var recyclerView: RecyclerView
 
@@ -43,6 +47,14 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         getUserData()
+
+        mAddFab = findViewById(R.id.fab)
+
+
+        mAddFab.setOnClickListener {
+            val intent = Intent(this, AddRestaurantsActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 

@@ -7,6 +7,7 @@
     android:background="@drawable/background"
     tools:context=".DisplayOneRestaurantActivity">
 
+    <!--top layout -->
     <ImageView
         android:id="@+id/hatLogoImage"
         android:layout_width="143dp"
@@ -23,6 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/textletseat" />
 
+    <!-- info layout -->
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="319dp"
@@ -31,26 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/infobox" />
-
-    <Button
-        android:id="@+id/YourFavoritesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:text="Your Favorite Dishes"
-        app:layout_constraintBottom_toTopOf="@+id/OthersFavoritesButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/OthersFavoritesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="Others Favorite dishes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/ResNameTextView"
@@ -84,15 +66,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AddressNameView" />
 
-    <ImageView
-        android:id="@+id/DishDisplayImageView"
-        android:layout_width="159dp"
-        android:layout_height="79dp"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/YourFavoritesButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_food_bank_24" />
 
     <EditText
         android:id="@+id/editPointsView"
@@ -124,5 +97,32 @@
         android:text="save"
         app:layout_constraintStart_toEndOf="@+id/editPointsView"
         app:layout_constraintTop_toBottomOf="@+id/ResPointsTextView" />
+
+
+
+    <!-- view pager -->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/idViewPager"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPointsView" />
+
+
+    <!-- buttons -->
+    <Button
+        android:id="@+id/YourFavoritesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add meals"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/idViewPager" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

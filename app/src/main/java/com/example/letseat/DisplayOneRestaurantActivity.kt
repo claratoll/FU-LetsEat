@@ -3,9 +3,8 @@ package com.example.letseat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager.widget.ViewPager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,6 +24,14 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
     private val restaurantList = mutableListOf<Restaurant>()
 
 
+    // on below line we are creating variable for view pager,
+    // viewpager adapter and the image list.
+    lateinit var viewPager: ViewPager
+    lateinit var viewPagerAdapter: ViewPagerAdapter
+    lateinit var mealList: List<Meal>
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_one_restaurant)
@@ -35,26 +42,43 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         nameView = findViewById(R.id.ResNameTextView)
         addressView = findViewById(R.id.AddressNameView)
         pointsView = findViewById(R.id.ResPointsTextView)
-        var dishImage = findViewById<ImageView>(R.id.DishDisplayImageView)
+
 
         val restaurantId = intent.getIntExtra("documentID", 999)
 
         getUserData(restaurantId)
 
+        // initializing variables
+        // of below line with their id.
+        viewPager = findViewById(R.id.idViewPager)
+
+        // on below line we are initializing
+        // our image list and adding data to it.
+        mealList = ArrayList<Meal>()
+
+
+      /*  imageList = imageList + R.drawable.firstimage
+        imageList = imageList + R.drawable.secondimage
+        imageList = imageList + R.drawable.thirdimage*/
+
+        // on below line we are initializing our view
+        // pager adapter and adding image list to it.
+        viewPagerAdapter = ViewPagerAdapter(this, mealList)
+
+        // on below line we are setting
+        // adapter to our view pager.
+        viewPager.adapter = viewPagerAdapter
+
 
         addressView.setOnClickListener{
             val intent = Intent(this, MapsActivity::class.java)
-            Log.v("!!!" , "restaurantPosition $restaurantId")
             intent.putExtra("documentID", restaurantId)
             this.startActivity(intent)
         }
-
-
     }
 
 
     private fun getUserData(restaurantId: Int) {
-
 
         val docRef = auth.currentUser?.let {
             db.collection("restaurants")

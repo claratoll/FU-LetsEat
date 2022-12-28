@@ -56,7 +56,7 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
                 context.startActivity(intent)
             }
 
-            }
+        }
 
     }
 

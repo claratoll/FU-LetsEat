@@ -3,6 +3,7 @@ package com.example.letseat
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.letseat.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,8 +44,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -53,10 +53,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.setInfoWindowAdapter(adapter)
 
 
-        fetchDataFromServer()
+        //mMap.setOnInfoWindowClickListener(this)
 
+        fetchDataFromServer()
     }
 
+    /** Called when the user clicks a marker.  */
+ /*   override fun onInfoWindowClick(marker: Marker) {
+        Toast.makeText(
+            this, "Info window clicked",
+            Toast.LENGTH_SHORT
+        ).show()
+    }*/
 
 
     fun fetchDataFromServer() {
@@ -134,5 +142,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         location?.let { CameraUpdateFactory.newLatLng(it) }?.let { mMap.moveCamera(it) }
 
     }
+
+
+
 
 }
