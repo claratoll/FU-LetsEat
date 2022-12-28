@@ -3,6 +3,9 @@ package com.example.letseat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +20,8 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
     private lateinit var nameView: TextView
     private lateinit var addressView: TextView
     private lateinit var pointsView: TextView
+    private lateinit var editPoints: EditText
+    private lateinit var saveButton: Button
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -42,6 +47,8 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         nameView = findViewById(R.id.ResNameTextView)
         addressView = findViewById(R.id.AddressNameView)
         pointsView = findViewById(R.id.ResPointsTextView)
+        editPoints = findViewById(R.id.editPointsView)
+        saveButton = findViewById(R.id.savePointsButton)
 
 
         val restaurantId = intent.getIntExtra("documentID", 999)
@@ -75,6 +82,23 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
             intent.putExtra("documentID", restaurantId)
             this.startActivity(intent)
         }
+
+        saveButton.setOnClickListener {
+            savePoints()
+        }
+    }
+
+
+    private fun savePoints(){
+        val points = editPoints.text.toString().toInt()
+
+        if (points < 1 || points > 10){
+            Log.v("!!!", "wrong input")
+
+        } else {
+            Log.v("!!!", "correct input $points")
+        }
+
     }
 
 

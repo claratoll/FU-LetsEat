@@ -37,12 +37,6 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
         infoView.text = restaurant?.address
         pointsView.text = "The restaurant has ${restaurant?.points.toString()} points"
 
-        /*if(restaurant != null){
-            imageView.setImageResource(restaurant?.image)
-        }*/
-
-
-
 
         infoWindow.setOnClickListener{
             Log.v("!!!", "helo")
@@ -50,8 +44,6 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
             intent.putExtra("documentID", restaurant?.restaurantName)
             context.startActivity(intent)
         }
-
-
 
         return infoWindow
     }
