@@ -16,17 +16,16 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
     val layoutInflater = LayoutInflater.from(context)
 
 
+
     override fun getInfoContents(p0: Marker): View? {
         return null
     }
-
 
 
     override fun getInfoWindow(marker: Marker): View? {
 
         val infoWindow = layoutInflater.inflate(R.layout.restaurant_item, null)
 
-        val imageView = infoWindow.findViewById<ImageView>(R.id.imageView)
         val titleView = infoWindow.findViewById<TextView>(R.id.RestaurantNameView)
         val infoView = infoWindow.findViewById<TextView>(R.id.infoTextView)
         val pointsView = infoWindow.findViewById<TextView>(R.id.pointsDisplayTextView)
@@ -37,18 +36,18 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
         infoView.text = restaurant?.address
         pointsView.text = "The restaurant has ${restaurant?.points.toString()} points"
 
-
         infoWindow.setOnClickListener{
             Log.v("!!!", "helo")
+
             val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
             intent.putExtra("documentID", restaurant?.restaurantName)
             context.startActivity(intent)
         }
 
+
+
         return infoWindow
     }
-
-
 
 
 }
