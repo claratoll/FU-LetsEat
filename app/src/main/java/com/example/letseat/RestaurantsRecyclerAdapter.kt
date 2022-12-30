@@ -29,6 +29,20 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         holder.resPoints.text = "The restaurant has ${restaurant?.points.toString()} points"
 
         holder.restaurantPosition = position
+
+        holder.restaurantNameView.setOnClickListener{
+            val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
+            Log.v("!!!" , "restaurantPosition ${restaurant.documentId}")
+            intent.putExtra("documentID", restaurant.documentId)
+            context.startActivity(intent)
+        }
+
+        holder.infoTextView.setOnClickListener{
+            val intent = Intent(context, MapsActivity::class.java)
+            Log.v("!!!" , "restaurantPosition ${restaurant.documentId}")
+            intent.putExtra("documentID", restaurant.documentId)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = restaurants.size
@@ -43,18 +57,7 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         //If user presses the address it will go to the map
 
         init {
-            restaurantNameView.setOnClickListener{
-                val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
-                intent.putExtra("documentID", restaurantPosition)
-                context.startActivity(intent)
-            }
 
-            infoTextView.setOnClickListener{
-                val intent = Intent(context, MapsActivity::class.java)
-                Log.v("!!!" , "restaurantPosition $restaurantPosition")
-                intent.putExtra("documentID", restaurantPosition)
-                context.startActivity(intent)
-            }
 
         }
 

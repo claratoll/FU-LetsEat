@@ -2,15 +2,12 @@ package com.example.letseat
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
-import android.widget.SimpleAdapter
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -19,7 +16,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.example.letseat.databinding.ActivityAddMealBinding
-import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -115,6 +111,8 @@ class AddMealActivity : AppCompatActivity() {
             binding.imageView2.setImageURI(imageUri)
 
 
+            Log.v("!!!", imageUri.toString())
+
         }
     }
 
@@ -130,10 +128,11 @@ class AddMealActivity : AppCompatActivity() {
             return
         }
 
-        val item = Meal(mealName = itemName, restaurantID = restaurantID)
+        val item = Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID)
 
         //adds location to database
         db.collection("meals").add(item)
+        finish()
     }
 
 

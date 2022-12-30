@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -27,15 +29,22 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var database: DatabaseReference
+
+    private var restaurant: Restaurant? = null
 
     private val restaurantList = mutableListOf<Restaurant>()
     private val mealList = mutableListOf<Meal>()
+
+    private var restaurantId = ""
 
 
     // on below line we are creating variable for view pager,
     // viewpager adapter and the image list.
     lateinit var viewPager: ViewPager
     lateinit var viewPagerAdapter: ViewPagerAdapter
+
+    private var points: Int = 0
 
 
 
@@ -45,6 +54,8 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_one_restaurant)
 
         db = Firebase.firestore
+        database = Firebase.database.reference
+
         auth = Firebase.auth
 
         nameView = findViewById(R.id.ResNameTextView)
@@ -55,11 +66,12 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         addButton = findViewById(R.id.AddMealButton)
 
 
-        var restaurantId = 1
-
-        restaurantId = intent.getIntExtra("documentID", 999)
+        restaurantId = intent.getStringExtra("documentID")!!
 
         getUserData(restaurantId)
+        getMealData(restaurantId)
+
+        Log.v("!!!", restaurant.toString())
 
         // initializing variables
         // of below line with their id.
@@ -67,10 +79,10 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
 
         // on below line we are initializing
         // our image list and adding data to it.
-     //   mealList = ArrayList<Meal>()
+        /*var imageList = ArrayList<Meal>()
 
 
-      /*  imageList = imageList + R.drawable.firstimage
+        imageList = imageList + R.drawable.firstimage
         imageList = imageList + R.drawable.secondimage
         imageList = imageList + R.drawable.thirdimage*/
 
@@ -78,9 +90,11 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         // pager adapter and adding image list to it.
         viewPagerAdapter = ViewPagerAdapter(this, mealList)
 
+
         // on below line we are setting
         // adapter to our view pager.
         viewPager.adapter = viewPagerAdapter
+        viewPagerAdapter.notifyDataSetChanged()
 
 
         addressView.setOnClickListener{
@@ -93,20 +107,33 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
             savePoints()
         }
 
-     //   val restaurant = restaurantList[restaurantId]
 
         addButton.setOnClickListener {
             val intent = Intent(this, AddMealActivity::class.java)
-            Log.v("!!!", restaurantList.get(restaurantId).restaurantName.toString())
-            intent.putExtra("RestaurantID", restaurantList.get(restaurantId).restaurantName)
+            intent.putExtra("RestaurantID", restaurantId)
             this.startActivity(intent)
         }
 
+
+
+
+
+    }
+
+    fun placeName(){
+        nameView.text = restaurant!!.restaurantName.toString()
+        addressView.text = restaurant!!.address.toString()
+        pointsView.text = "The restaurant has ${restaurant!!.points}"
     }
 
 
     private fun savePoints(){
-        val points = editPoints.text.toString().toInt()
+        //hämta data
+
+        //räkna ut medelvärde
+        //User input
+
+        points = editPoints.text.toString().toInt()
 
         if (points < 1 || points > 10){
             Log.v("!!!", "wrong input")
@@ -115,37 +142,73 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
             Log.v("!!!", "correct input $points")
         }
 
+        Log.v("!!!", "you picked $points points")
+
+
+        //database.child("restaurants").child("points").setValue(points)
+
+
+        //val resPointsUpdate = db.collection("restaurants")
+
+
+        Log.v("!!!", restaurantId)
+
+        db.collection("restaurants").document(restaurantId)
+            .update(mapOf(
+                "points" to points
+            ))
+
+
     }
 
-    private fun getMealData(restaurantId: Int){
-        val docRef = auth.currentUser?.let {
+    private fun getMealData(restaurantId: String){
+       // val docRef = auth.currentUser?.let {
             db.collection("meals")
                 .addSnapshotListener { snapshot, e ->
                     mealList.clear()
-                    Log.v("!!!", "tjena")
                     if (snapshot != null) {
                         val mealArray = mutableListOf<Meal>()
                         for (document in snapshot.documents) {
                             val mealDoc = document.toObject<Meal>()
                             if (mealDoc != null) {
-                                Log.v("!!!", "tjena")
-                                //mealArray.add(mealDoc)
+                                //viewPagerAdapter.notifyDataSetChanged()
+                                mealArray.add(mealDoc)
                             } else {
                                 viewPager.visibility = View.GONE
-                                Log.v("!!!", "helo")
+
+                                Log.v("!!!", "no images")
                             }
                         }
                         mealList.addAll(mealArray)
-                        placeName(restaurantId)
+                        viewPagerAdapter.notifyDataSetChanged()
+
                     }
-                }
+            //    }
 
         }
     }
 
-    private fun getUserData(restaurantId: Int) {
+    private fun getUserData(restaurantId: String) {
 
-        val docRef = auth.currentUser?.let {
+        db.collection("restaurants").document(restaurantId).addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w("!!!", "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                Log.d("!!!", "Current data: ${snapshot.data}")
+                val restaurantDoc = snapshot.toObject<Restaurant>()
+                restaurant = restaurantDoc
+                placeName()
+            } else {
+                Log.d("!!!", "Current data: null")
+            }
+        }
+
+
+/*
+       // val docRef = auth.currentUser?.let {
             db.collection("restaurants")
                 .addSnapshotListener { snapshot, e ->
                     restaurantList.clear()
@@ -161,17 +224,9 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
                         placeName(restaurantId)
                     }
                 }
-
-        }
+*/
+        //}
     }
 
-    fun placeName(restaurantId: Int) {
 
-        val restaurant = restaurantList[restaurantId]
-
-        nameView.text = restaurant.restaurantName.toString()
-        addressView.text = restaurant.address.toString()
-        pointsView.text = "The restaurant has ${restaurant.points}"
-
-    }
 }

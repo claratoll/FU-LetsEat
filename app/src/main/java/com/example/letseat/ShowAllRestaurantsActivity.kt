@@ -60,7 +60,7 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
 
     private fun getUserData() {
 
-        val docRef = auth.currentUser?.let {
+     //   val docRef = auth.currentUser?.let {
             db.collection("restaurants")
                 .addSnapshotListener { snapshot, e ->
                     listOfRestaurants.clear()
@@ -75,7 +75,7 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
                         listOfRestaurants.addAll(restArray)
                         adapter.notifyDataSetChanged()
                     }
-                }
+       //         }
         }
     }
 }
