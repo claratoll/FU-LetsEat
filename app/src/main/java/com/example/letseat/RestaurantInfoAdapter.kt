@@ -36,16 +36,6 @@ class RestaurantInfoAdapter(val context: Context) : GoogleMap.InfoWindowAdapter 
         infoView.text = restaurant?.address
         pointsView.text = "The restaurant has ${restaurant?.points.toString()} points"
 
-        infoWindow.setOnClickListener{
-            Log.v("!!!", "helo")
-
-            val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
-            intent.putExtra("documentID", restaurant?.restaurantName)
-            context.startActivity(intent)
-        }
-
-
-
         return infoWindow
     }
 
