@@ -30,6 +30,10 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
 
         holder.restaurantPosition = position
 
+
+        //If user presses the restaurant name it will go to detailed information about the restaurant
+        //If user presses the address it will go to the map
+
         holder.restaurantNameView.setOnClickListener{
             val intent = Intent(context, DisplayOneRestaurantActivity::class.java)
             Log.v("!!!" , "restaurantPosition ${restaurant.documentId}")
@@ -40,7 +44,7 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         holder.infoTextView.setOnClickListener{
             val intent = Intent(context, MapsActivity::class.java)
             Log.v("!!!" , "restaurantPosition ${restaurant.documentId}")
-            intent.putExtra("documentID", restaurant.documentId)
+          //  intent.putExtra("documentID", restaurant.documentId)
             context.startActivity(intent)
         }
     }
@@ -53,13 +57,6 @@ class RestaurantsRecyclerAdapter (val context : Context,val restaurants : List <
         val resPoints = itemView.findViewById<TextView>(R.id.pointsDisplayTextView)
         var restaurantPosition = 0
 
-        //If user presses the restaurant name it will go to detailed information about the restaurant
-        //If user presses the address it will go to the map
-
-        init {
-
-
-        }
 
     }
 
