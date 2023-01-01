@@ -13,15 +13,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.letseat.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    lateinit var auth: FirebaseAuth
     lateinit var db: FirebaseFirestore
 
     private lateinit var mMap: GoogleMap
@@ -29,18 +26,17 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var listOfRestaurants = mutableListOf<Restaurant>()
 
-    private var anotherResNumb : Int = 0
-
+    private lateinit var restaurantId: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        auth = Firebase.auth
-        db = Firebase.firestore
-
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        db = Firebase.firestore
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -48,58 +44,59 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         val adapter = RestaurantInfoAdapter(this)
         mMap.setInfoWindowAdapter(adapter)
 
+        fetchDataFromServer()
 
 
-        val restaurantID = fetchDataFromServer()
+        mMap.setOnInfoWindowClickListener { ClickOnRestaurant ->
+            for (restaurant in listOfRestaurants){
+                if (restaurant.restaurantName.equals(ClickOnRestaurant.title)){
+                    restaurantId = restaurant.documentId
+                    onInfoWindowClick(restaurantId)
 
-
-        mMap.setOnInfoWindowClickListener {
-            val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
-            Log.v("!!!", anotherResNumb.toString())
-            intent.putExtra("documentID", anotherResNumb)
-            this.startActivity(intent)
+                }
+            }
+          //  onInfoWindowClick()
         }
     }
 
-    /** Called when the user clicks a marker.  */
- /*   override fun onInfoWindowClick(marker: Marker) {
-        Toast.makeText(
-            this, "Info window clicked",
-            Toast.LENGTH_SHORT
-        ).show()
-    }*/
+    fun onInfoWindowClick(resId : String) {
+
+
+        val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
+        Log.v("!!!", resId)
+        intent.putExtra("documentID", resId)
+        this.startActivity(intent)
+    }
 
 
     fun fetchDataFromServer() {
 
-        val docRef = auth.currentUser?.let {
-            db.collection("restaurants")
-                .get()
-                .addOnSuccessListener { documents ->
-                    val restArray = mutableListOf<Restaurant>()
-                    for (document in documents) {
-                        val restaurantDoc = document.toObject(Restaurant::class.java)
-                        restArray.add(restaurantDoc)
-                    }
-                    listOfRestaurants.addAll(restArray)
-                    createPlaces()
+        db.collection("restaurants")
+            .get()
+            .addOnSuccessListener { documents ->
+                val restArray = mutableListOf<Restaurant>()
+                for (document in documents) {
+                    val restaurantDoc = document.toObject(Restaurant::class.java)
+                    restArray.add(restaurantDoc)
                 }
-                .addOnFailureListener { exception ->
-                    Log.d("!!!", "get failed with ", exception)
-                }
-        }
+                listOfRestaurants.addAll(restArray)
+                createPlaces()
+            }
+            .addOnFailureListener { exception ->
+                Log.d("!!!", "get failed with ", exception)
+            }
 
     }
 
 
     fun createPlaces() {
-
 
         val boundsBuilder = LatLngBounds.builder()
 
@@ -107,74 +104,26 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val latitude = restaurant.position?.latitude?.toDouble()
             val longitude = restaurant.position?.longitude?.toDouble()
+      //      restaurantId = restaurant.documentId
 
             val location = latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }
             if (location != null) {
                 boundsBuilder.include(location)
             }
-            val marker = location?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
-            marker?.tag = restaurant
+            val marker =
+                location?.let { MarkerOptions().position(it).title(restaurant.restaurantName) }?.let { mMap.addMarker(it) }!!
+            marker.tag = restaurant
 
         }
 
-        //if user has pressed on a specific restaurant
-        val restaurantNumber = intent.getIntExtra("documentID", 999)
-        if (restaurantNumber != 999) {
-            startPlaceFromIntent(restaurantNumber)
-            Log.v("!!!", "restaurant number is $restaurantNumber")
-            mMap.animateCamera(
-                CameraUpdateFactory.newLatLngBounds(
-                    boundsBuilder.build(),
-                    1000,
-                    1000,
-                    0
-                )
+
+        mMap.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                boundsBuilder.build(),
+                1000,
+                1000,
+                0
             )
-        } else {
-            mMap.animateCamera(
-                CameraUpdateFactory.newLatLngBounds(
-                    boundsBuilder.build(),
-                    1000,
-                    1000,
-                    0
-                )
-            )
-        }
-
-
+        )
     }
-
-    fun startPlaceFromIntent(restaurantNumber: Int){
-
-        /* mMap.setOnInfoWindowClickListener {
-            val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
-            intent.putExtra("documentID", restaurantNumber)
-            this.startActivity(intent)
-        }*/
-
-        val boundsBuilder = LatLngBounds.builder()
-
-        val latitude = listOfRestaurants[restaurantNumber].position?.latitude?.toDouble()
-        val longitude = listOfRestaurants[restaurantNumber].position?.longitude?.toDouble()
-
-        Log.v("!!!", "restaurant latitude is $latitude")
-
-        val location = latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }
-        if (location != null) {
-            boundsBuilder.include(location)
-        }
-        val marker = location?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
-        marker?.tag = listOfRestaurants[restaurantNumber]
-
-        location?.let { CameraUpdateFactory.newLatLng(it) }?.let { mMap.moveCamera(it) }
-
-        anotherResNumb = restaurantNumber
-        Log.v("!!!", "hej $anotherResNumb")
-
-
-    }
-
-
-
-
 }
