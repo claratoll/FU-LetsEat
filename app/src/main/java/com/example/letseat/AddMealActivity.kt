@@ -21,13 +21,13 @@ import java.util.*
 
 class AddMealActivity : AppCompatActivity() {
 
-    lateinit var db : FirebaseFirestore
-    lateinit var auth : FirebaseAuth
+    lateinit var db: FirebaseFirestore
+    lateinit var auth: FirebaseAuth
 
-    lateinit var mealView : EditText
+    lateinit var mealView: EditText
 
-    lateinit var binding : ActivityAddMealBinding
-    lateinit var imageUri : Uri
+    lateinit var binding: ActivityAddMealBinding
+    lateinit var imageUri: Uri
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,16 +57,16 @@ class AddMealActivity : AppCompatActivity() {
             goToRestaurantsActivity()
         }
 
-        binding.selectImageBtn.setOnClickListener{
+        binding.selectImageBtn.setOnClickListener {
             selectImage()
         }
 
-        binding.uploadImageBtn.setOnClickListener{
+        binding.uploadImageBtn.setOnClickListener {
             uploadImage()
         }
     }
 
-    private fun selectImage(){
+    private fun selectImage() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
@@ -74,8 +74,8 @@ class AddMealActivity : AppCompatActivity() {
         startActivityForResult(intent, 100)
     }
 
-    private fun uploadImage(){
-       val progressDialog = ProgressDialog(this)
+    private fun uploadImage() {
+        val progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Uploading file...")
         progressDialog.setCancelable(false)
         progressDialog.show()
@@ -89,8 +89,9 @@ class AddMealActivity : AppCompatActivity() {
             .addOnSuccessListener {
 
                 binding.imageView2.setImageURI(null)
-                Toast.makeText(this@AddMealActivity, "Successfully uploaded", Toast.LENGTH_SHORT).show()
-                if (progressDialog.isShowing)progressDialog.dismiss()
+                Toast.makeText(this@AddMealActivity, "Successfully uploaded", Toast.LENGTH_SHORT)
+                    .show()
+                if (progressDialog.isShowing) progressDialog.dismiss()
 
 
             }.addOnFailureListener {
@@ -105,7 +106,7 @@ class AddMealActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 100 && resultCode == RESULT_OK){
+        if (requestCode == 100 && resultCode == RESULT_OK) {
 
             imageUri = data?.data!!
             binding.imageView2.setImageURI(imageUri)
@@ -116,10 +117,10 @@ class AddMealActivity : AppCompatActivity() {
         }
     }
 
-    fun saveItem(restaurantID : String){
+    fun saveItem(restaurantID: String) {
         //function to add a new meal to the database
-
         val itemName = mealView.text.toString()
+
 
         mealView.setText("")
 
@@ -128,7 +129,8 @@ class AddMealActivity : AppCompatActivity() {
             return
         }
 
-        val item = Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID)
+        val item =
+            Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID)
 
         //adds location to database
         db.collection("meals").add(item)
@@ -136,7 +138,7 @@ class AddMealActivity : AppCompatActivity() {
     }
 
 
-    fun goToRestaurantsActivity(){
+    fun goToRestaurantsActivity() {
         val intent = Intent(this, ShowAllRestaurantsActivity::class.java)
         startActivity(intent)
     }

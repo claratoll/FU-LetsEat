@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -28,20 +29,20 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
 
     private var listOfRestaurants = mutableListOf<Restaurant>()
+   // private var restaurant: Restaurant? = null
 
-    private var anotherResNumb : Int = 0
+    private lateinit var restaurantId: String
+
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        auth = Firebase.auth
-        db = Firebase.firestore
-
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        auth = Firebase.auth
+        db = Firebase.firestore
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -54,52 +55,60 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val adapter = RestaurantInfoAdapter(this)
         mMap.setInfoWindowAdapter(adapter)
 
-
-
-        val restaurantID = fetchDataFromServer()
+        fetchDataFromServer()
 
 
         mMap.setOnInfoWindowClickListener {
             val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
-            Log.v("!!!", anotherResNumb.toString())
-            intent.putExtra("documentID", anotherResNumb)
+            Log.v("!!!", restaurantId)
+            intent.putExtra("documentID", restaurantId)
             this.startActivity(intent)
         }
     }
 
-    /** Called when the user clicks a marker.  */
- /*   override fun onInfoWindowClick(marker: Marker) {
-        Toast.makeText(
-            this, "Info window clicked",
-            Toast.LENGTH_SHORT
-        ).show()
-    }*/
 
 
     fun fetchDataFromServer() {
 
-        val docRef = auth.currentUser?.let {
-            db.collection("restaurants")
-                .get()
-                .addOnSuccessListener { documents ->
-                    val restArray = mutableListOf<Restaurant>()
-                    for (document in documents) {
-                        val restaurantDoc = document.toObject(Restaurant::class.java)
-                        restArray.add(restaurantDoc)
-                    }
-                    listOfRestaurants.addAll(restArray)
+        /*    db.collection("restaurants").document(restaurantId).addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.v("!!!", "Listen failed", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("!!!", "Current data: ${snapshot.data}")
+                    val restaurantDoc = snapshot.toObject<Restaurant>()
+                   // restaurant = restaurantDoc
                     createPlaces()
+                }else {
+                    Log.d("!!!", "Current data: null")
                 }
-                .addOnFailureListener { exception ->
-                    Log.d("!!!", "get failed with ", exception)
                 }
+*/
+        db.collection("restaurants")
+            .get()
+            .addOnSuccessListener { documents ->
+                val restArray = mutableListOf<Restaurant>()
+                for (document in documents) {
+                    val restaurantDoc = document.toObject(Restaurant::class.java)
+                    restArray.add(restaurantDoc)
+                }
+                listOfRestaurants.addAll(restArray)
+                createPlaces()
+            }
+            .addOnFailureListener { exception ->
+                Log.d("!!!", "get failed with ", exception)
+            }
+
+
+
         }
 
-    }
+
 
 
     fun createPlaces() {
-
 
         val boundsBuilder = LatLngBounds.builder()
 
@@ -118,9 +127,8 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         //if user has pressed on a specific restaurant
-        val restaurantNumber = intent.getIntExtra("documentID", 999)
-        if (restaurantNumber != 999) {
-            startPlaceFromIntent(restaurantNumber)
+        val restaurantNumber = intent.getStringExtra("documentID")
+        if (restaurantNumber != null) {
             Log.v("!!!", "restaurant number is $restaurantNumber")
             mMap.animateCamera(
                 CameraUpdateFactory.newLatLngBounds(
@@ -143,38 +151,4 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
-
-    fun startPlaceFromIntent(restaurantNumber: Int){
-
-        /* mMap.setOnInfoWindowClickListener {
-            val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
-            intent.putExtra("documentID", restaurantNumber)
-            this.startActivity(intent)
-        }*/
-
-        val boundsBuilder = LatLngBounds.builder()
-
-        val latitude = listOfRestaurants[restaurantNumber].position?.latitude?.toDouble()
-        val longitude = listOfRestaurants[restaurantNumber].position?.longitude?.toDouble()
-
-        Log.v("!!!", "restaurant latitude is $latitude")
-
-        val location = latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }
-        if (location != null) {
-            boundsBuilder.include(location)
-        }
-        val marker = location?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
-        marker?.tag = listOfRestaurants[restaurantNumber]
-
-        location?.let { CameraUpdateFactory.newLatLng(it) }?.let { mMap.moveCamera(it) }
-
-        anotherResNumb = restaurantNumber
-        Log.v("!!!", "hej $anotherResNumb")
-
-
-    }
-
-
-
-
 }

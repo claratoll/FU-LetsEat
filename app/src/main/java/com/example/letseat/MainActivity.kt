@@ -59,6 +59,13 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+            // calculate length of the entered password and compare
+            if (password.length < 6) {
+                throw ArithmeticException("Password is too short")
+            } else{
+                println("Strong password")}
+
+
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{ task ->
             if (task.isSuccessful){
                 Log.d("!!!", "login success")
