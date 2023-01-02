@@ -5,12 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,12 +20,14 @@ import java.util.*
 class AddMealActivity : AppCompatActivity() {
 
     lateinit var db: FirebaseFirestore
-    lateinit var auth: FirebaseAuth
 
     lateinit var mealView: EditText
 
     lateinit var binding: ActivityAddMealBinding
     lateinit var imageUri: Uri
+
+    lateinit var fileName: String
+    lateinit var imageFileName: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,14 +36,11 @@ class AddMealActivity : AppCompatActivity() {
         binding = ActivityAddMealBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = Firebase.auth
         db = Firebase.firestore
 
         mealView = findViewById(R.id.EditMealNameView)
 
         val restaurantID = intent.getStringExtra("RestaurantID")
-
-        Log.v("!!!", restaurantID.toString())
 
         val saveButton = findViewById<Button>(R.id.anotherSaveButton)
         saveButton.setOnClickListener {
@@ -82,13 +79,13 @@ class AddMealActivity : AppCompatActivity() {
 
         val formatter = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
         val now = Date()
-        val fileName = formatter.format(now)
+        fileName = formatter.format(now)
+        imageFileName = fileName
         val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
 
         storageReference.putFile(imageUri)
             .addOnSuccessListener {
 
-                binding.imageView2.setImageURI(null)
                 Toast.makeText(this@AddMealActivity, "Successfully uploaded", Toast.LENGTH_SHORT)
                     .show()
                 if (progressDialog.isShowing) progressDialog.dismiss()
@@ -111,9 +108,6 @@ class AddMealActivity : AppCompatActivity() {
             imageUri = data?.data!!
             binding.imageView2.setImageURI(imageUri)
 
-
-            Log.v("!!!", imageUri.toString())
-
         }
     }
 
@@ -121,16 +115,10 @@ class AddMealActivity : AppCompatActivity() {
         //function to add a new meal to the database
         val itemName = mealView.text.toString()
 
-
         mealView.setText("")
 
-        val user = auth.currentUser
-        if (user == null) {
-            return
-        }
-
         val item =
-            Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID)
+            Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID, glideImageUrl = "images/${imageFileName}")
 
         //adds location to database
         db.collection("meals").add(item)

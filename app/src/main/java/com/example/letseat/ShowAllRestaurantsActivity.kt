@@ -3,16 +3,12 @@ package com.example.letseat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -46,7 +42,7 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
         adapter = RestaurantsRecyclerAdapter(this, listOfRestaurants)
         recyclerView.adapter = adapter
 
-        getUserData()
+        getRestaurantData()
 
         mAddFab = findViewById(R.id.fab)
 
@@ -55,12 +51,10 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
             val intent = Intent(this, AddRestaurantsActivity::class.java)
             startActivity(intent)
         }
-
     }
 
-    private fun getUserData() {
+    private fun getRestaurantData() {
 
-     //   val docRef = auth.currentUser?.let {
             db.collection("restaurants")
                 .addSnapshotListener { snapshot, e ->
                     listOfRestaurants.clear()
@@ -75,7 +69,7 @@ class ShowAllRestaurantsActivity : AppCompatActivity() {
                         listOfRestaurants.addAll(restArray)
                         adapter.notifyDataSetChanged()
                     }
-       //         }
+
         }
     }
 }

@@ -29,14 +29,10 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
     private lateinit var addButton: Button
 
-    private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var database: DatabaseReference
 
     private var restaurant: Restaurant? = null
-    private var meal: Meal? = null
 
-    private val restaurantList = mutableListOf<Restaurant>()
     private val mealList = mutableListOf<Meal>()
 
     private lateinit var recyclerView: RecyclerView
@@ -52,9 +48,6 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_one_restaurant)
 
         db = Firebase.firestore
-        database = Firebase.database.reference
-
-        auth = Firebase.auth
 
         nameView = findViewById(R.id.ResNameTextView)
         addressView = findViewById(R.id.AddressNameView)
@@ -73,8 +66,6 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
 
         getUserData()
         getMealData()
-
-        Log.v("!!!", restaurant.toString())
 
 
         addressView.setOnClickListener{
@@ -103,25 +94,19 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
 
 
     private fun savePoints(){
-        //hämta data
-
-        //räkna ut medelvärde
-        //User input
-
 
         val inputPoint = editPoints.text.toString().toInt()
-        Log.v("!!!", inputPoint.toString())
+
 
         if (editPoints.toString() != "") {
 
             Log.v("!!!", "correct input")
+            editPoints.setText("")
 
-        //    Log.v("!!!", "wrong input")
         }  else {
             Log.v("!!!", "wrong input")
             editPoints.setText("")
-         //   points = editPoints.text.toString().toInt()
-         //   Log.v("!!!", "correct input $points")
+
         }
 
         if (inputPoint <1 || inputPoint> 10) {
@@ -136,11 +121,6 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
                 ))
 
         }
-
-
-        Log.v("!!!", "you picked $points points")
-
-        Log.v("!!!", restaurantId)
     }
 
     private fun getMealData(){
@@ -165,10 +145,7 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
                         adapter.notifyDataSetChanged()
 
                     }
-            //    }
-
         }
-
     }
 
     private fun getUserData() {
@@ -188,9 +165,5 @@ class DisplayOneRestaurantActivity : AppCompatActivity() {
                 Log.d("!!!", "Current data: null")
             }
         }
-
-
     }
-
-
 }
