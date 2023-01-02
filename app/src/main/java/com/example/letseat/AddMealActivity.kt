@@ -29,6 +29,9 @@ class AddMealActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddMealBinding
     lateinit var imageUri: Uri
 
+    lateinit var fileName: String
+    lateinit var imageFileName: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,13 +85,14 @@ class AddMealActivity : AppCompatActivity() {
 
         val formatter = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
         val now = Date()
-        val fileName = formatter.format(now)
+        fileName = formatter.format(now)
+        imageFileName = fileName.toString()
         val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
 
         storageReference.putFile(imageUri)
             .addOnSuccessListener {
 
-                binding.imageView2.setImageURI(null)
+             //   binding.imageView2.setImageURI(null)
                 Toast.makeText(this@AddMealActivity, "Successfully uploaded", Toast.LENGTH_SHORT)
                     .show()
                 if (progressDialog.isShowing) progressDialog.dismiss()
@@ -111,7 +115,6 @@ class AddMealActivity : AppCompatActivity() {
             imageUri = data?.data!!
             binding.imageView2.setImageURI(imageUri)
 
-
             Log.v("!!!", imageUri.toString())
 
         }
@@ -121,7 +124,6 @@ class AddMealActivity : AppCompatActivity() {
         //function to add a new meal to the database
         val itemName = mealView.text.toString()
 
-
         mealView.setText("")
 
         val user = auth.currentUser
@@ -130,7 +132,7 @@ class AddMealActivity : AppCompatActivity() {
         }
 
         val item =
-            Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID)
+            Meal(mealName = itemName, image = imageUri.toString(), restaurantID = restaurantID, glideImageUrl = "images/${imageFileName}")
 
         //adds location to database
         db.collection("meals").add(item)

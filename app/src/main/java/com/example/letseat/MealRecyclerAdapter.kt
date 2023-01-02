@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.view.menu.MenuView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import android.net.Uri as Uri
+import com.bumptech.glide.Glide
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class MealRecyclerAdapter (val context: Context, val meals : List <Meal>): RecyclerView.Adapter<MealRecyclerAdapter.ViewHolder>() {
 
@@ -27,14 +27,13 @@ class MealRecyclerAdapter (val context: Context, val meals : List <Meal>): Recyc
         val meal = meals[position]
         holder.mealNameView.text = meal.mealName.toString()
 
-       // val mealImage = meal.image?.toUri()
-
-  //      Log.v("!!!", "$mealImage")
-
-                //    holder.imageMealView.setImageURI(null)
-
-
-    //   holder.imageMealView.setImageURI(meal.image?.toUri())
+        val imageRef = Firebase.storage.reference.child(meal.glideImageUrl)
+        imageRef.downloadUrl.addOnSuccessListener { Uri -> val imageUrl = Uri.toString()
+            Log.v("!!!", imageUrl)
+            Glide.with(context)
+                .load(imageUrl)
+                .into(holder.imageMealView)
+        }
 
         holder.mealPosition = position
     }
