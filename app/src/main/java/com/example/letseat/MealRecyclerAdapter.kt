@@ -1,7 +1,6 @@
 package com.example.letseat
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,6 @@ class MealRecyclerAdapter (val context: Context, val meals : List <Meal>): Recyc
 
         val imageRef = Firebase.storage.reference.child(meal.glideImageUrl)
         imageRef.downloadUrl.addOnSuccessListener { Uri -> val imageUrl = Uri.toString()
-            Log.v("!!!", imageUrl)
             Glide.with(context)
                 .load(imageUrl)
                 .into(holder.imageMealView)

@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         passwordView = findViewById(R.id.PasswordEditText)
 
 
-
         val signUpButton = findViewById<Button>(R.id.createuserbutton)
         signUpButton.setOnClickListener {
             signUp()
@@ -48,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ShowAllRestaurantsActivity::class.java)
         startActivity(intent)
     }
-
 
 
     fun signIn() {

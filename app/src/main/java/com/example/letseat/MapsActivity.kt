@@ -34,9 +34,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         db = Firebase.firestore
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -53,7 +51,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fetchDataFromServer()
 
-
         mMap.setOnInfoWindowClickListener { ClickOnRestaurant ->
             for (restaurant in listOfRestaurants){
                 if (restaurant.restaurantName.equals(ClickOnRestaurant.title)){
@@ -62,13 +59,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 }
             }
-          //  onInfoWindowClick()
+
         }
     }
 
     fun onInfoWindowClick(resId : String) {
-
-
         val intent = Intent(this, DisplayOneRestaurantActivity::class.java)
         Log.v("!!!", resId)
         intent.putExtra("documentID", resId)
@@ -104,7 +99,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val latitude = restaurant.position?.latitude?.toDouble()
             val longitude = restaurant.position?.longitude?.toDouble()
-      //      restaurantId = restaurant.documentId
+
 
             val location = latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }
             if (location != null) {
